@@ -28,7 +28,7 @@ rpdo:  # RxPDO = receive PDO Mapping
   - index: 0x1600
     channels:
       - {index: 0x607a, sub_index: 0, type: int32, command_interface: position, factor: 83395.0, default: .nan}
-      - {index: 0x60fe, sub_index: 0, type: int32, default: 0}  # Digital Output Functionalities
+      - {index: 0x60fe, sub_index: 0, type: int32, default: 1}  # Digital Output Functionalities: bit0=1 disengages brake
       - {index: 0x6040, sub_index: 0, type: uint16, default: 0}  # Control word
       - {index: 0x60ff, sub_index: 0, type: int32, command_interface: velocity, factor: 83395.0, default: 0}  # Velocity feed-forward
       - {index: 0x6071, sub_index: 0, type: int16, default: 0}  # Target torque

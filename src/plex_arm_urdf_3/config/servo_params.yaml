@@ -46,7 +46,7 @@ servo_node:
       planning_frame: base_link  # The MoveIt planning frame. Often 'base_link' or 'world'
 
       ## Other frames
-      ee_frame_name: link_6  # The end-effector frame. Used for Twist commands and collision checking
+      ee_frame_name: EE_assembly  # The end-effector frame. Used for Twist commands and collision checking
       robot_link_command_frame:  base_link  # commands must be given in the frame of a robot link. Usually either the base or end effector
 
       ## Stopping behaviour

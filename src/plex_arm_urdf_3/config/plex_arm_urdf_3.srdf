@@ -11,21 +11,23 @@
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="plex_arm">
         <link name="base_link"/>
-        <link name="link_2"/>
-        <link name="link_3"/>
-        <link name="link_4"/>
-        <link name="link_5"/>
-        <link name="link_6"/>
+        <link name="Link_2"/>
+        <link name="Link_3"/>
+        <link name="Link_4"/>
+        <link name="Link_5"/>
+        <link name="Link_6"/>
+        <link name="EE_assembly"/>
     </group>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base_link"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="base_link" link2="link_2" reason="Adjacent"/>
-    <disable_collisions link1="base_link" link2="link_4" reason="Never"/>
-    <disable_collisions link1="link_2" link2="link_3" reason="Adjacent"/>
-    <disable_collisions link1="link_2" link2="link_4" reason="Never"/>
-    <disable_collisions link1="link_3" link2="link_4" reason="Adjacent"/>
-    <disable_collisions link1="link_4" link2="link_5" reason="Adjacent"/>
-    <disable_collisions link1="link_4" link2="link_6" reason="Never"/>
-    <disable_collisions link1="link_5" link2="link_6" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="Link_2" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="Link_4" reason="Never"/>
+    <disable_collisions link1="Link_2" link2="Link_3" reason="Adjacent"/>
+    <disable_collisions link1="Link_2" link2="Link_4" reason="Never"/>
+    <disable_collisions link1="Link_3" link2="Link_4" reason="Adjacent"/>
+    <disable_collisions link1="Link_4" link2="Link_5" reason="Adjacent"/>
+    <disable_collisions link1="Link_4" link2="Link_6" reason="Never"/>
+    <disable_collisions link1="Link_5" link2="Link_6" reason="Adjacent"/>
+    <disable_collisions link1="Link_6" link2="EE_assembly" reason="Adjacent"/>
 </robot>

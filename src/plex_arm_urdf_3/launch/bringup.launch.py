@@ -165,11 +165,11 @@ def generate_launch_description():
     return LaunchDescription([
         # robot_state_publisher,
         # joint_state_publisher_gui,
-        # rviz_node,
+        rviz_node,
         # ros2_control_node,
         # joint_state_broadcaster_spawner,
         # arm_controller_spawner,
-        joy_node,
+        # joy_node,
         gamepad_node,
         # keyboard_node,
         servo_node,
