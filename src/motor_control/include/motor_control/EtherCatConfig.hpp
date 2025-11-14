@@ -1,3 +1,4 @@
-struct EtherCatConfig {
-    //TODO
+struct EtherCatConfig
+{
+  //TODO
 };

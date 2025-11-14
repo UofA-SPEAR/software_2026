@@ -1,5 +1,5 @@
 enum class WheelMotorControlMode
 {
-    VELOCITY,
-    POSITION
+  VELOCITY,
+  POSITION
 };

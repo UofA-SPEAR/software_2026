@@ -1,3 +1,4 @@
-struct MotorConfig{
-    // TODO
+struct MotorConfig
+{
+  // TODO
 };
