@@ -5,6 +5,11 @@
 install/
 log/
 build/
+resource/
+
+# python
+__pycache__/
+*.pyc
 
 # Ignore generated docs
 *.dox
