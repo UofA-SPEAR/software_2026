@@ -2,16 +2,13 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "include/motor_control/EtherCatConfig.hpp"
 #include "include/motor_control/MotorConfig.hpp"
+#include "include/motor_control/WheelMotorControlMode.hpp"
+#include "include/motor_control/IWheelMotor.hpp"
 #include "std_msgs/msg/float32.hpp"
 #include "motor_control/action/wheel_fine_control.hpp"
 
-namespace motor_control
+namespace whell_motor_control
 {
-    enum class WheelMotorNodeMode
-    {
-        VELOCITY,
-        POSITION
-    };
 
     // Boilerplate adapted from:
     // https://docs.ros.org/en/humble/Tutorials/Intermediate/Writing-an-Action-Server-Client/Cpp.html
@@ -37,11 +34,14 @@ namespace motor_control
             EtherCatConfig ethercat_config,
             MotorConfig motor_config) : Node(wheel_name + "_wheel_motor_node", options),
                                         wheel_name_(wheel_name),
-                                        ethercat_config_(std::move(ethercat_config)),
                                         motor_config_(std::move(motor_config)),
-                                        mode_(WheelMotorNodeMode::VELOCITY)
+                                        mode_(WheelMotorControlMode::VELOCITY)
         {
             using namespace std::placeholders;
+
+            // Create the motor interface
+            motor_ = create_IWheelMotor();
+            motor_->initialize(ethercat_config);
 
             // Bind the control loop to a timer at `control_frequency_hz`
             declare_parameter("control_frequency_hz", 100);
@@ -68,10 +68,9 @@ namespace motor_control
 
     private:
         // Configuration
-        std::string wheel_name_;         // Wheel name, eg "front_right"
-        EtherCatConfig ethercat_config_; // Configuration for EtherCAT communication
-        MotorConfig motor_config_;       // Configuration for motor parameters (like whether it is flipped, scaling, anything else)
-        WheelMotorNodeMode mode_;        // Control mode (velocity or position)
+        std::string wheel_name_;     // Wheel name, eg "front_right"
+        MotorConfig motor_config_;   // Configuration for motor parameters (like whether it is flipped, scaling, anything else)
+        WheelMotorControlMode mode_; // Control mode (velocity or position)
 
         // Control state
         double target_velocity_;
@@ -82,6 +81,8 @@ namespace motor_control
         rclcpp_action::Server<WheelFineControl>::SharedPtr fine_control_action_server_;
         rclcpp::TimerBase::SharedPtr control_timer_;
 
+        std::unique_ptr<IWheelMotor> motor_; // Interface to the actual motor
+
         /**
          * @brief Main control loop, executed at fixed rate
          */
@@ -89,10 +90,10 @@ namespace motor_control
         {
             switch (mode_)
             {
-            case WheelMotorNodeMode::VELOCITY:
+            case WheelMotorControlMode::VELOCITY:
                 control_velocity();
                 break;
-            case WheelMotorNodeMode::POSITION:
+            case WheelMotorControlMode::POSITION:
                 control_position();
                 break;
             }
@@ -142,6 +143,13 @@ namespace motor_control
         void velocity_command_callback(const std_msgs::msg::Float32::SharedPtr msg)
         {
             RCLCPP_INFO(get_logger(), "Received velocity command: %f", msg->data);
+        }
+
+        // IWheelMotor creation (for testability)
+        std::unique_ptr<IWheelMotor> create_IWheelMotor()
+        {
+            // TODO
+            throw std::runtime_error("create_IWheelMotor() not implemented");
         }
     };
 } // namespace motor_control

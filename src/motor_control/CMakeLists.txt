@@ -42,6 +42,15 @@ if(BUILD_TESTING)
   # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+  # ament_add_gtest(${PROJECT_NAME}_test test/tutorial.cpp)
+  # target_include_directories(${PROJECT_NAME}_tutorial PUBLIC
+  #   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  #   $<INSTALL_INTERFACE:include>
+  # )
+  # ament_target_dependencies(${PROJECT_NAME}_tutorial
+  #   std_msgs
+  # )
+  # target_link_libraries(${PROJECT_NAME}_tutorial motor_control)
 endif()
 
 ament_package()
