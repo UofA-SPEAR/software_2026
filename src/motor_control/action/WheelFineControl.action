@@ -1,0 +1,13 @@
+float64 target_position
+float64 max_velocity
+float64 tolerance
+float32 timeout
+---
+float64 final_position
+float64 position_error
+bool success
+---
+float64 current_position
+float64 position_error
+float64 percent_complete
+float32 time_elapsed
