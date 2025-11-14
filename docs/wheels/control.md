@@ -6,16 +6,16 @@ Coarse wheel control is done on topic `/<wheel_name>/cmd_vel`
 Fine wheel control is done by action server `/<wheel_name>/fine_control`
 - Action type: `motor_control/action/FineWheelControl`
     - Goal fields:
-        - `target_position` (float64): desired wheel position in radians
+        - `target_position` (float64): desired wheel position offset in radians (relative to current position)
         - `max_velocity` (float64): maximum wheel velocity in radians/s
         - `tolerance` (float64): acceptable error in radians
         - `timeout` (float32): if the action takes longer than this number of seconds, it will cancel
     - Result fields:
-        - `final_position` (float64): final wheel position in radians
+        - `final_position` (float64): final wheel position in radians (relative to starting position)
         - `position_error` (float64): final error in radians
         - `success` (bool): whether the action succeeded
     - Feedback fields:
-        - `current_position` (float64): current wheel position in radians
+        - `current_position` (float64): current wheel position in radians (relative to starting position)
         - `position_error` (float64): current error in radians
         - `percent_complete` (float64): estimated percentage of completion
         - `time_elapsed` (float32): time elapsed since start of action in seconds
