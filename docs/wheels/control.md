@@ -9,11 +9,10 @@ Fine wheel control is done by action server `/<wheel_name>/fine_control`
         - `target_position` (float64): desired wheel position offset in radians (relative to current position)
         - `max_velocity` (float64): maximum wheel velocity in radians/s
         - `tolerance` (float64): acceptable error in radians
-        - `timeout` (float32): if the action takes longer than this number of seconds, it will cancel
+        - `timeout` (float32): if the action takes longer than this number of seconds, it will abort (set to negative for no timeout)
     - Result fields:
         - `final_position` (float64): final wheel position in radians (relative to starting position)
         - `position_error` (float64): final error in radians
-        - `success` (bool): whether the action succeeded
     - Feedback fields:
         - `current_position` (float64): current wheel position in radians (relative to starting position)
         - `position_error` (float64): current error in radians

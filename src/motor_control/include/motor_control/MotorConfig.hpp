@@ -1,4 +1,6 @@
+#pragma once
+
 struct MotorConfig
 {
-  // TODO
+   // TODO
 };

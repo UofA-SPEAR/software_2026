@@ -5,7 +5,6 @@ float32 timeout
 ---
 float64 final_position
 float64 position_error
-bool success
 ---
 float64 current_position
 float64 position_error

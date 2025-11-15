@@ -1,4 +1,6 @@
+#pragma once
+
 struct EtherCatConfig
 {
-  //TODO
+   //TODO
 };

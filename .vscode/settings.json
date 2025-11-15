@@ -1,3 +1,8 @@
 {
-    "cmake.sourceDirectory": "/workspace/spear/src/motor_control"
+    "cmake.sourceDirectory": "/workspace/spear/src/motor_control",
+    "files.associations": {
+        "*.jinja": "html",
+        "*.py": "python",
+        "chrono": "cpp"
+    }
 }
