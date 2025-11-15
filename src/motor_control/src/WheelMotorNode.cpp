@@ -44,35 +44,36 @@ public:
    using GoalHandleWheelFineControl = rclcpp_action::ServerGoalHandle<WheelFineControl>;
 
    static std::shared_ptr<WheelMotorNode> create(
-      const std::string&         wheel_name,
-      const rclcpp::NodeOptions& options,
-      EtherCatConfig             ethercat_config,
-      MotorConfig                motor_config)
+      const std::string&           wheel_name,
+      const rclcpp::NodeOptions&   options,
+      EtherCatConfig               ethercat_config,
+      MotorConfig                  motor_config,
+      std::unique_ptr<IWheelMotor> motor)
    {
       return std::shared_ptr<WheelMotorNode>(
          new WheelMotorNode(
             wheel_name,
             options,
             std::move(ethercat_config),
-            std::move(motor_config)));
+            std::move(motor_config),
+            std::move(motor)));
    }
 
 protected:
    WheelMotorNode(
-      const std::string&         wheel_name,
-      const rclcpp::NodeOptions& options,
-      EtherCatConfig             ethercat_config,
-      MotorConfig                motor_config)
+      const std::string&           wheel_name,
+      const rclcpp::NodeOptions&   options,
+      EtherCatConfig               ethercat_config,
+      MotorConfig                  motor_config,
+      std::unique_ptr<IWheelMotor> motor)
       : Node(wheel_name + "_wheel_motor_node", options),
       wheel_name_(wheel_name),
       motor_config_(std::move(motor_config)),
       mode_(WheelMotorControlMode::VELOCITY)
    {
-      using namespace std::placeholders;
-
-      // Create the motor interface
-      motor_ = create_IWheelMotor();
+      motor_ = std::move(motor);
       motor_->initialize(ethercat_config);
+      using namespace std::placeholders;
 
       // Bind the control loop to a timer at `control_frequency_hz`
       declare_parameter(WHEEL_MOTOR_CONTROL_FREQUENCY_NAME, WHEEL_MOTOR_CONTROL_FREQUENCY_DEFAULT);
@@ -85,14 +86,14 @@ protected:
       // Bind the action server
       fine_control_action_server_ = rclcpp_action::create_server<WheelFineControl>(
          this,
-         wheel_name_ + "/fine_control",
+         wheel_name + "/fine_control",
          std::bind(&WheelMotorNode::handle_fine_control_goal, this, _1, _2),
          std::bind(&WheelMotorNode::handle_fine_control_cancel, this, _1),
          std::bind(&WheelMotorNode::handle_fine_control_accepted, this, _1));
 
       // Bind the topic subscription
       velocity_command_subscription_ = create_subscription<std_msgs::msg::Float32>(
-         wheel_name_ + "/cmd_vel",
+         wheel_name + "/cmd_vel",
          10,
          std::bind(&WheelMotorNode::velocity_command_callback, this, _1));
 
@@ -105,13 +106,6 @@ protected:
       goal_completion_check_frequency_hz_ = get_parameter(WHEEL_MOTOR_GOAL_COMPLETION_CHECK_FREQUENCY_NAME).as_int();
       declare_parameter(WHEEL_MOTOR_GOAL_COMPLETION_CHECK_DURATION_NAME, WHEEL_MOTOR_GOAL_COMPLETION_CHECK_DURATION_DEFAULT);
       goal_completion_check_duration_ms_ = get_parameter(WHEEL_MOTOR_GOAL_COMPLETION_CHECK_DURATION_NAME).as_int();
-   }
-
-   // IWheelMotor creation (for testability)
-   virtual std::unique_ptr<IWheelMotor> create_IWheelMotor()
-   {
-      // TODO
-      throw std::runtime_error("create_IWheelMotor() not implemented");
    }
 
 private:
