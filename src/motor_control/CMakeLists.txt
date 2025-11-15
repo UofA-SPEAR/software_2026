@@ -40,15 +40,7 @@ install(TARGETS my_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
-
-  # Skip linters 
-  set(ament_cmake_cpplint_FOUND TRUE)
-  set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_uncrustify_FOUND TRUE)
-
-  ament_lint_auto_find_test_dependencies()
   
   ament_add_gtest(${PROJECT_NAME}_test test/TESTS.cpp)
   if(TARGET ${PROJECT_NAME}_test)
