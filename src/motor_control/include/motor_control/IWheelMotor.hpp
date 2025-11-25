@@ -17,11 +17,12 @@ public:
 
    virtual void tick(const std::chrono::milliseconds& delta_time) = 0;
 
-   virtual void set_target_velocity(float velocity_rad_per_s) = 0;
-   virtual void set_target_position(float position_rad)       = 0;
-   virtual void set_control_mode(WheelMotorControlMode mode)  = 0;
+   virtual void set_target_velocity(float velocity_rad_per_s)           = 0;
+   virtual void set_target_position_relative_to_now(float position_rad) = 0;
+   virtual void set_control_mode(WheelMotorControlMode mode)            = 0;
 
-   virtual float get_current_velocity() const             = 0;
-   virtual float get_current_position() const             = 0;
-   virtual WheelMotorControlMode get_control_mode() const = 0;
+   virtual float get_current_velocity() const                    = 0;
+   virtual double get_current_position_absolute() const          = 0;
+   virtual float get_current_position_relative_to_target() const = 0;
+   virtual WheelMotorControlMode get_control_mode() const        = 0;
 };

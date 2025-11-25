@@ -28,6 +28,7 @@ public:
       case WheelMotorControlMode::POSITION:
          real_velocity_ = 0;
          real_position += (target_position_ - real_position) * dt_sec * 0.1f;
+         break;
       }
    }
 
@@ -36,9 +37,10 @@ public:
       target_velocity_ = velocity_rad_per_s;
    }
 
-   void set_target_position(float position_rad) override
+   void set_target_position_relative_to_now(float position_rad) override
    {
-      target_position_ = position_rad;
+      real_position_when_target_set = real_position;
+      target_position_ = real_position + static_cast<double>(position_rad);
    }
 
    void set_control_mode(WheelMotorControlMode mode) override
@@ -51,9 +53,14 @@ public:
       return real_velocity_;
    }
 
-   float get_current_position() const override
+   double get_current_position_absolute() const override
    {
       return real_position;
+   }
+
+   float get_current_position_relative_to_target() const override
+   {
+      return real_position - real_position_when_target_set;
    }
 
    WheelMotorControlMode get_control_mode() const override
@@ -64,8 +71,9 @@ public:
 private:
    float target_velocity_ = 0.0f;
    float target_position_ = 0.0f;
+   double real_position_when_target_set = 0.0f;
 
    float real_velocity_ = 0.0f;
-   float real_position  = 0.0f;
+   double real_position = 0.0f;
    WheelMotorControlMode control_mode_ = WheelMotorControlMode::VELOCITY;
 };

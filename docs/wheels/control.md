@@ -19,3 +19,17 @@ Fine wheel control is done by action server `/<wheel_name>/fine_control`
         - `percent_complete` (float64): estimated percentage of completion
         - `time_elapsed` (float32): time elapsed since start of action in seconds
 - **When an action is active, coarse control commands are ignored.**
+
+### Diagnostic Topics:
+- `/<wheel_name>/mode`
+    - Message type: `Int8`
+    - Interpretation: current wheel control mode
+        - `0`: velocity control mode
+        - `1`: position control mode
+    - Defined in `motor_control/include/motor_control/WheelMotorControlMode.hpp`
+- `/<wheel_name>/current_vel`
+    - Message type: `Float32`
+    - Interpretation: current wheel velocity in radians/s
+- `/<wheel_name>/current_position`
+    - Message type: `Float64`
+    - Interpretation: current wheel position in radians relative to starting position, this will gain inaccuracy over time, but this is negligible for our use case

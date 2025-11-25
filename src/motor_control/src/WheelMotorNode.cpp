@@ -5,6 +5,8 @@
 #include "motor_control/WheelMotorControlMode.hpp"
 #include "motor_control/IWheelMotor.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "std_msgs/msg/float64.hpp"
+#include "std_msgs/msg/int8.hpp"
 #include "motor_control/action/wheel_fine_control.hpp"
 
 /**
@@ -123,6 +125,11 @@ private:
    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr velocity_command_subscription_;
    rclcpp_action::Server<WheelFineControl>::SharedPtr fine_control_action_server_;
    rclcpp::TimerBase::SharedPtr control_timer_;
+   // Output Topics
+   rclcpp::Publisher<std_msgs::msg::Int8>::SharedPtr current_mode_publisher_;
+   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr current_velocity_publisher_;
+   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr current_position_publisher_;
+
 
    std::unique_ptr<IWheelMotor> motor_;      // Interface to the actual motor
 
@@ -152,7 +159,18 @@ private:
       }
       motor_->tick(delta_time);
       last_control_time_ = current_time;
-      // TODO publish diagnostics
+      // publish diagnostics
+      auto current_mode_msg = std_msgs::msg::Int8();
+      current_mode_msg.data = static_cast<int8_t>(mode_);
+      current_mode_publisher_->publish(current_mode_msg);
+
+      auto current_vel_msg = std_msgs::msg::Float32();
+      current_vel_msg.data = motor_->get_current_velocity();
+      current_velocity_publisher_->publish(current_vel_msg);
+
+      auto current_position_msg = std_msgs::msg::Float64();
+      current_position_msg.data = motor_->get_current_position_absolute();
+      current_position_publisher_->publish(current_position_msg);
    }
 
    /**
@@ -170,7 +188,7 @@ private:
    void control_position()
    {
       motor_->set_control_mode(WheelMotorControlMode::POSITION);
-      motor_->set_target_position(target_position_);
+      motor_->set_target_position_relative_to_now(target_position_);
    }
 
    // Action server callbacks
@@ -227,7 +245,7 @@ private:
       int          stable_checks_count    = 0;
       const float  timeout_seconds        = goal->timeout;
       const auto   start_time             = std::chrono::high_resolution_clock::now();
-      const auto   motor_start_position   = motor_->get_current_position();
+      const auto   motor_start_position   = motor_->get_current_position_relative_to_target();
 
       while (rclcpp::ok())
       {
@@ -244,13 +262,13 @@ private:
          {
             RCLCPP_INFO(get_logger(), "Wheel fine control goal canceled");
             auto result = std::make_shared<WheelFineControl::Result>();
-            result->final_position = motor_->get_current_position();
+            result->final_position = motor_->get_current_position_relative_to_target();
             result->position_error = std::abs(result->final_position - goal->target_position);
             goal_handle->canceled(result);
             return;
          }
          // Check if the goal is achieved
-         float current_position = motor_->get_current_position();
+         float current_position = motor_->get_current_position_relative_to_target();
          float position_error   = std::abs(current_position - goal->target_position);
          if (position_error <= goal->tolerance)
          {
