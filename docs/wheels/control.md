@@ -21,7 +21,7 @@ Fine wheel control is done by action server `/<wheel_name>/fine_control`
 - **When an action is active, coarse control commands are ignored.**
 
 ### Diagnostic Topics:
-- `/<wheel_name>/mode`
+- `/<wheel_name>/current_mode`
     - Message type: `Int8`
     - Interpretation: current wheel control mode
         - `0`: velocity control mode

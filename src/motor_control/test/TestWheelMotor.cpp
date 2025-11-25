@@ -22,12 +22,12 @@ public:
       switch (control_mode_)
       {
       case WheelMotorControlMode::VELOCITY:
-         real_velocity_ += (target_velocity_ - real_velocity_) * dt_sec * 0.1f;
+         real_velocity_ += (target_velocity_ - real_velocity_) * dt_sec * 10.0f;
          break;
 
       case WheelMotorControlMode::POSITION:
          real_velocity_ = 0;
-         real_position += (target_position_ - real_position) * dt_sec * 0.1f;
+         real_position += (target_position_ - real_position) * dt_sec * 10.0f;
          break;
       }
    }

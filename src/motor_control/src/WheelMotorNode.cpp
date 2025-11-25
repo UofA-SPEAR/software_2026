@@ -99,6 +99,17 @@ protected:
          10,
          std::bind(&WheelMotorNode::velocity_command_callback, this, _1));
 
+      // Bind the feedback publishers
+      current_mode_publisher_ = create_publisher<std_msgs::msg::Int8>(
+         wheel_name + "/current_mode",
+         10);
+      current_velocity_publisher_ = create_publisher<std_msgs::msg::Float32>(
+         wheel_name + "/current_vel",
+         10);
+      current_position_publisher_ = create_publisher<std_msgs::msg::Float64>(
+         wheel_name + "/current_position",
+         10);
+
 
       // set the initialization time
       last_control_time_ = std::chrono::high_resolution_clock::now();
