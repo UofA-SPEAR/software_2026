@@ -199,7 +199,6 @@ private:
    void control_position()
    {
       motor_->set_control_mode(WheelMotorControlMode::POSITION);
-      motor_->set_target_position_relative_to_now(target_position_);
    }
 
    // Action server callbacks
@@ -235,6 +234,7 @@ private:
       mode_ = WheelMotorControlMode::POSITION;
       auto goal = goal_handle->get_goal();
       target_position_ = goal->target_position;
+      motor_->set_target_position_relative_to_now(target_position_);
       RCLCPP_INFO(get_logger(), "Starting wheel fine control goal execution");
       using namespace std::placeholders;
       std::thread{ std::bind(&WheelMotorNode::wait_for_stabilized_completion, this, _1), goal_handle }.detach();
@@ -275,6 +275,8 @@ private:
             auto result = std::make_shared<WheelFineControl::Result>();
             result->final_position = motor_->get_current_position_relative_to_target();
             result->position_error = std::abs(result->final_position - goal->target_position);
+            current_goal_uuid_.reset();
+            mode_ = WheelMotorControlMode::VELOCITY;
             goal_handle->canceled(result);
             return;
          }
@@ -296,6 +298,8 @@ private:
             auto result = std::make_shared<WheelFineControl::Result>();
             result->final_position = current_position;
             result->position_error = position_error;
+            current_goal_uuid_.reset();
+            mode_ = WheelMotorControlMode::VELOCITY;
             goal_handle->succeed(result);
          }
          else
@@ -314,4 +318,4 @@ private:
       }
    }
 };
-} // namespace whell_motor_control
+} // namespace wheel_motor_control

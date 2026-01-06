@@ -1,5 +1,6 @@
 #include "motor_control/IWheelMotor.hpp"
 #include "motor_control/WheelMotorControlMode.hpp"
+#include <cmath>
 
 class TestWheelMotor : public IWheelMotor
 {
@@ -27,7 +28,7 @@ public:
 
       case WheelMotorControlMode::POSITION:
          real_velocity_ = 0;
-         real_position += (target_position_ - real_position) * dt_sec * 10.0f;
+         real_position += std::pow(target_position_ - real_position, 2.0) * dt_sec;
          break;
       }
    }
