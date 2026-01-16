@@ -3,6 +3,7 @@
   become: yes
   vars:
     ROS_VERSION: "1.1.0"
+    MAC_ADDRESS: "FF:FF:FF:FF:FF:FF"  # Replace with actual MAC address of the network interface to be used for EtherCAT
   tasks:
     - name: "Install Python3"
       apt:
@@ -82,3 +83,109 @@
           ansible.builtin.apt:
             name: ros-humble-ros-gz
             state: present
+    - name: "Install ros2_control"
+      ansible.builtin.apt:
+        name:
+          - ros-humble-ros2-control
+          - ros-humble-ros2-controllers
+    - name: "Install ethercat_driver_ros2" # https://icube-robotics.github.io/ethercat_driver_ros2/quickstart/installation.html
+      block:
+        - name: "Install required tools"
+          ansible.builtin.apt:
+            name:
+              - git
+              - autoconf
+              - libtool
+              - pkg-config
+              - make
+              - build-essential
+              - net-tools
+              - linux-headers-generic
+        - name: "Clone repository"
+          ansible.builtin.git:
+            repo: "https://gitlab.com/etherlab.org/ethercat.git"
+            dest: "/tmp/ethercat"
+            clone: yes
+            update: yes
+
+    - name: "Remove existing ethercat binaries and init scripts"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/bin/ethercat
+        - /etc/init.d/ethercat
+
+    - name: "Run bootstrap"
+      ansible.builtin.command:
+        cmd: ./bootstrap
+        chdir: /tmp/ethercat
+        creates: /tmp/ethercat/configure
+
+    - name: "Configure EtherCAT"
+      ansible.builtin.command:
+        cmd: ./configure --prefix=/usr/local/etherlab --disable-8139too --disable-eoe --enable-generic --disable-kernel
+        chdir: /tmp/ethercat
+        creates: /tmp/ethercat/Makefile
+
+    - name: "Build EtherCAT"
+      ansible.builtin.command:
+        cmd: make all
+        chdir: /tmp/ethercat
+
+    - name: "Install EtherCAT modules"
+      ansible.builtin.command:
+        cmd: make install
+        chdir: /tmp/ethercat
+      become: yes
+
+    - name: "Create symlink for ethercat binary"
+      ansible.builtin.file:
+        src: /usr/local/etherlab/bin/ethercat
+        dest: /usr/bin/ethercat
+        state: link
+
+    - name: "Create symlink for ethercat init script"
+      ansible.builtin.file:
+        src: /usr/local/etherlab/etc/init.d/ethercat
+        dest: /etc/init.d/ethercat
+        state: link
+
+    - name: "Create /etc/sysconfig directory"
+      ansible.builtin.file:
+        path: /etc/sysconfig
+        state: directory
+        mode: '0755'
+
+    - name: "Copy ethercat sysconfig file"
+      ansible.builtin.copy:
+        src: /usr/local/etherlab/etc/sysconfig/ethercat
+        dest: /etc/sysconfig/ethercat
+        remote_src: yes
+
+    - name: "Create udev rule for EtherCAT"
+      ansible.builtin.copy:
+        content: 'KERNEL=="EtherCAT[0-9]*", MODE="0666"'
+        dest: /etc/udev/rules.d/99-EtherCAT.rules
+        mode: '0644'
+
+    - name: "Reload udev rules"
+      ansible.builtin.command:
+        cmd: udevadm control --reload-rules
+
+    - name: "Configure EtherCAT network adapter"
+      ansible.builtin.lineinfile:
+        path: /etc/sysconfig/ethercat
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - { regexp: '^MASTER0_DEVICE=', line: 'MASTER0_DEVICE="{{ MAC_ADDRESS }}"' }
+        - { regexp: '^DEVICE_MODULES=', line: 'DEVICE_MODULES="generic"' }
+      notify: restart ethercat
+
+  # handlers:
+  #   - name: restart ethercat
+  #     ansible.builtin.service:
+  #       name: ethercat
+  #       state: restarted
