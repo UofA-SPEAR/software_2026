@@ -1,0 +1,107 @@
+- name: "Set up ROS2 environment"
+  hosts: localhost
+  become: yes
+  vars:
+    ROS_VERSION: "1.1.0"
+  tasks:
+    - name: "Install Python3"
+      apt:
+        name:
+          - python3
+          - python3-pip
+    - name: "Setup ROS2 Repository"
+      block:
+        - name: "Remove existing ROS2 source"
+          ansible.builtin.file:
+            path: /tmp/ros2-apt-source.deb
+            state: absent
+        - name: "Get Ubuntu Codename"
+          ansible.builtin.shell: |
+            . /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}}
+          register: ubuntu_codename
+        - name: "Add ROS2 APT repository"
+          ansible.builtin.get_url:
+            url: "https://github.com/ros-infrastructure/ros-apt-source/releases/download/{{ ROS_VERSION }}/ros2-apt-source_{{ ROS_VERSION}}.{{ ubuntu_codename.stdout }}_all.deb"
+            dest: /tmp/ros2-apt-source.deb
+        - name: "Install ROS2 APT source package"
+          ansible.builtin.apt:
+            deb: /tmp/ros2-apt-source.deb
+        - name: "Update APT cache"
+          ansible.builtin.apt:
+            update_cache: yes
+    - name: "Install ROS2 packages"
+      ansible.builtin.apt:
+        name:
+          - ros-dev-tools
+          - ros-humble-desktop
+    - name: "Install python packages"
+      ansible.builtin.pip:
+        name:
+          - colcon-common-extensions
+    - name: Configure ROS2 environment in bashrc
+      block:
+        - name: Get USERNAME environment variable
+          ansible.builtin.shell: echo $USERNAME
+          register: username_env
+          changed_when: false
+        - name: Source ROS2 Humble setup in bashrc
+          ansible.builtin.lineinfile:
+            path: "/home/{{ username_env.stdout }}/.bashrc"
+            line: "source /opt/ros/humble/setup.bash"
+            create: yes
+
+        - name: Source colcon argcomplete in bashrc
+          ansible.builtin.lineinfile:
+            path: "/home/{{ username_env.stdout }}/.bashrc"
+            line: "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash"
+            create: yes
+
+        - name: Source workspace setup in bashrc
+          ansible.builtin.lineinfile:
+            path: "/home/{{ username_env.stdout }}/.bashrc"
+            line: "source /workspace/install/setup.bash || true"
+            create: yes
+    - name: Install Gazebo Ignition Fortress
+      block:
+        - name: Install lsb-release and gnupg
+          ansible.builtin.apt:
+            name:
+              - lsb-release
+              - gnupg
+            state: present
+            update_cache: yes
+
+        - name: Download Gazebo GPG key
+          ansible.builtin.get_url:
+            url: https://packages.osrfoundation.org/gazebo.gpg
+            dest: /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+            mode: '0644'
+
+        - name: Get system architecture
+          ansible.builtin.command: dpkg --print-architecture
+          register: system_arch
+          changed_when: false
+
+        - name: Get Ubuntu codename
+          ansible.builtin.command: lsb_release -cs
+          register: ubuntu_codename
+          changed_when: false
+
+        - name: Add Gazebo stable repository
+          ansible.builtin.apt_repository:
+            repo: "deb [arch={{ system_arch.stdout }} signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable {{ ubuntu_codename.stdout }} main"
+            filename: gazebo-stable
+            state: present
+
+        - name: Update apt cache
+          ansible.builtin.apt:
+            update_cache: yes
+
+        - name: Install Ignition Fortress
+          ansible.builtin.apt:
+            name: ignition-fortress
+            state: present
+        - name: Install Gazebo bridge
+          ansible.builtin.apt:
+            name: ros-humble-ros-gz
+            state: present

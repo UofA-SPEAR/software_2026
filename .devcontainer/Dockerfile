@@ -26,27 +26,18 @@ RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get install -y tzdata && \
     dpkg-reconfigure -f noninteractive tzdata
 
-
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y python3-pip
 ENV SHELL=/bin/bash
 
+# Generate locale
+RUN apt-get update && apt-get install -y locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8
 
-# Install ROS2 (Kilted)
-RUN sudo apt update && sudo apt install curl -y
-# clear the temp source if it exists
-RUN rm -f /tmp/ros2-apt-source.deb || true
-RUN export ROS_APT_SOURCE_VERSION=$VERSION_NUMBER \
-    && curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb" \
-    && sudo dpkg -i /tmp/ros2-apt-source.deb
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get update && apt-get install ros-dev-tools -y
-
-RUN apt-get update && apt-get upgrade -y
-
-RUN apt-get install ros-humble-desktop -y
-
-RUN apt-get install python3-colcon-common-extensions -y
+# Install curl, ansible, git
+RUN sudo apt update && sudo apt install git curl software-properties-common -y && sudo add-apt-repository --yes --update ppa:ansible/ansible && sudo apt install ansible -y
 
 # Wayland + XWayland + other
 RUN apt-get install -y \
@@ -58,22 +49,6 @@ RUN apt-get install -y \
     xwayland \
     xauth \
     mesa-utils
-
-# Gazebo Sim
-RUN sudo apt-get install lsb-release gnupg
-RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
-RUN sudo apt-get update
-RUN sudo apt-get install ignition-fortress -y
-
-# Gazebo Bridge
-RUN sudo apt-get install ros-humble-ros-gz -y
-
-# add sources to bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USERNAME/.bashrc
-RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USERNAME/.bashrc
-RUN echo "source /workspace/install/setup.bash || true" >> /home/$USERNAME/.bashrc
-# ^ || true here in case the setup.bash hasn't been created yet
 
 # Set the default user.
 USER $USERNAME
