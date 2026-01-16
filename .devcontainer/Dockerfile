@@ -49,6 +49,13 @@ RUN apt-get install -y \
     xwayland \
     xauth \
     mesa-utils
+    
+# add sources to bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USERNAME/.bashrc
+RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USERNAME/.bashrc
+RUN echo "source /workspace/install/setup.bash || true" >> /home/$USERNAME/.bashrc
+# ^ || true here in case the setup.bash hasn't been created yet
+
 
 # Set the default user.
 USER $USERNAME
