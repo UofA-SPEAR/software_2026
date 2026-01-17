@@ -1,0 +1,1 @@
+git clone https://github.com/ICube-Robotics/ethercat_driver_ros2.git --branch humble
