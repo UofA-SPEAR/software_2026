@@ -1,0 +1,18 @@
+vendor_id: 0x00001337
+product_id: 0x000004d2
+
+sm:
+  - {index: 0, type: output, pdo: null}
+  - {index: 1, type: input,  pdo: null}
+  - {index: 2, type: output, pdo: rpdo, watchdog: true}
+  - {index: 3, type: input,  pdo: tpdo, watchdog: false}
+
+rpdo: 
+  - index: 0x1600
+    channels:
+      - {index: 0x7000, sub_index: 1, type: uint32, command_interface: Target_PWM}
+
+tpdo: 
+  - index: 0x1a00
+    channels:
+      - {index: 0x6000, sub_index: 1, type: uint32, state_interface: Feedback}
