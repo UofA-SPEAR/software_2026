@@ -1,0 +1,3 @@
+To send commands to properly [configured](configuration.md) motors, you need to send a Float64MultiArray to the correct topic. The array contains a list of target values for the motor, ordered by their appearance in `controllers.yaml` inside that motor_controller
+
+To receive feedback from motors, you do much the same, by reading from the joint_state_broadcaster's topic, the order is declared in the same way, but underneath that section of the yaml (the motor_controller and joint_state_broadcaster for the same set of motors should have identical order or else it will cause confusion for no benefit)
