@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'joy_to_motor = station_c2.joy_to_motor:main',
         ],
     },
 )
