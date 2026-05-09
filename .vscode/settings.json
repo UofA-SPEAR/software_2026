@@ -4,5 +4,6 @@
         "*.jinja": "html",
         "*.py": "python",
         "chrono": "cpp"
-    }
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }

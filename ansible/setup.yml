@@ -12,10 +12,14 @@
           - python3-pip
     - name: "Setup ROS2 Repository"
       block:
-        - name: "Remove existing ROS2 source"
+        - name: "Remove conflicting ROS2 source files"
           ansible.builtin.file:
-            path: /tmp/ros2-apt-source.deb
+            path: "{{ item }}"
             state: absent
+          loop:
+            - /tmp/ros2-apt-source.deb
+            - /etc/apt/sources.list.d/ros2-latest.sources
+            - /etc/apt/sources.list.d/ros2.sources
         - name: "Get Ubuntu Codename"
           ansible.builtin.shell: |
             . /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}}
@@ -24,6 +28,10 @@
           ansible.builtin.get_url:
             url: "https://github.com/ros-infrastructure/ros-apt-source/releases/download/{{ ROS_VERSION }}/ros2-apt-source_{{ ROS_VERSION}}.{{ ubuntu_codename.stdout }}_all.deb"
             dest: /tmp/ros2-apt-source.deb
+        - name: "Remove old apt cache"
+          ansible.builtin.command:
+            cmd: rm -f /var/lib/apt/lists/lock
+          ignore_errors: yes
         - name: "Install ROS2 APT source package"
           ansible.builtin.apt:
             deb: /tmp/ros2-apt-source.deb
@@ -89,6 +97,7 @@
           - ros-humble-ros2-control
           - ros-humble-ros2-controllers
     - name: "Install ethercat_driver_ros2" # https://icube-robotics.github.io/ethercat_driver_ros2/quickstart/installation.html
+      tags: ethercat
       block:
         - name: "Install required tools"
           ansible.builtin.apt:
@@ -109,6 +118,7 @@
             update: yes
 
     - name: "Remove existing ethercat binaries and init scripts"
+      tags: ethercat
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
@@ -117,63 +127,74 @@
         - /etc/init.d/ethercat
 
     - name: "Run bootstrap"
+      tags: ethercat
       ansible.builtin.command:
         cmd: ./bootstrap
         chdir: /tmp/ethercat
         creates: /tmp/ethercat/configure
 
     - name: "Configure EtherCAT"
+      tags: ethercat
       ansible.builtin.command:
         cmd: ./configure --prefix=/usr/local/etherlab --disable-8139too --disable-eoe --enable-generic --disable-kernel
         chdir: /tmp/ethercat
         creates: /tmp/ethercat/Makefile
 
     - name: "Build EtherCAT"
+      tags: ethercat
       ansible.builtin.command:
         cmd: make all
         chdir: /tmp/ethercat
 
     - name: "Install EtherCAT modules"
+      tags: ethercat
       ansible.builtin.command:
         cmd: make install
         chdir: /tmp/ethercat
       become: yes
 
     - name: "Create symlink for ethercat binary"
+      tags: ethercat
       ansible.builtin.file:
         src: /usr/local/etherlab/bin/ethercat
         dest: /usr/bin/ethercat
         state: link
 
     - name: "Create symlink for ethercat init script"
+      tags: ethercat
       ansible.builtin.file:
         src: /usr/local/etherlab/etc/init.d/ethercat
         dest: /etc/init.d/ethercat
         state: link
 
     - name: "Create /etc/sysconfig directory"
+      tags: ethercat
       ansible.builtin.file:
         path: /etc/sysconfig
         state: directory
         mode: '0755'
 
     - name: "Copy ethercat sysconfig file"
+      tags: ethercat
       ansible.builtin.copy:
         src: /usr/local/etherlab/etc/sysconfig/ethercat
         dest: /etc/sysconfig/ethercat
         remote_src: yes
 
     - name: "Create udev rule for EtherCAT"
+      tags: ethercat
       ansible.builtin.copy:
         content: 'KERNEL=="EtherCAT[0-9]*", MODE="0666"'
         dest: /etc/udev/rules.d/99-EtherCAT.rules
         mode: '0644'
 
     - name: "Reload udev rules"
+      tags: ethercat
       ansible.builtin.command:
         cmd: udevadm control --reload-rules
 
     - name: "Configure EtherCAT network adapter"
+      tags: ethercat
       ansible.builtin.lineinfile:
         path: /etc/sysconfig/ethercat
         regexp: "{{ item.regexp }}"
@@ -182,7 +203,7 @@
       loop:
         - { regexp: '^MASTER0_DEVICE=', line: 'MASTER0_DEVICE="{{ MAC_ADDRESS }}"' }
         - { regexp: '^DEVICE_MODULES=', line: 'DEVICE_MODULES="generic"' }
-      notify: restart ethercat
+      # notify: restart ethercat
 
   # handlers:
   #   - name: restart ethercat
