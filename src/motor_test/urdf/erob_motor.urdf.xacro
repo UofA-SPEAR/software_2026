@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<robot name="erob_motor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="base_link"/>
+  <link name="erob_link"/>
+
+  <joint name="erob_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="erob_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <ros2_control name="eRobSystem" type="system">
+    <hardware>
+      <plugin>ethercat_driver/EthercatDriver</plugin>
+      <param name="master_id">0</param>
+      <param name="control_frequency">100</param>
+    </hardware>
+
+    <joint name="erob_joint">
+      <!-- State interfaces exposed to ROS2 controllers -->
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+
+      <!-- Command interfaces exposed to ROS2 controllers -->
+      <!-- Use "position" for CSPosition (mode 8) -->
+      <!-- Use "velocity" for CSVelocity (mode 9) -->
+      <!-- Use "effort"   for CSTorque   (mode 10) -->
+      <command_interface name="position"/>
+
+      <!-- reset_fault: send 0->1 rising edge to clear drive faults -->
+      <command_interface name="reset_fault"/>
+
+      <ec_module name="eRob1">
+        <!-- EcCiA402Drive handles the full CiA402 state machine automatically:
+             Not Ready -> Switch On Disabled -> Ready to Switch On
+             -> Switched On -> Operation Enabled
+             No manual control word management needed. -->
+        <plugin>ethercat_generic_plugins/EcCiA402Drive</plugin>
+        <param name="alias">0</param>
+        <param name="position">0</param>
+
+        <!-- Mode of operation:
+             6  = Homing
+             8  = Cyclic Synchronous Position (CSP)  <-- default here
+             9  = Cyclic Synchronous Velocity (CSV)
+             10 = Cyclic Synchronous Torque (CST) -->
+        <param name="mode_of_operation">8</param>
+
+        <!-- UPDATE THIS PATH to the absolute path on your Jetson -->
+        <param name="slave_config">/home/spearua/alec/software_2026/install/motor_test/share/motor_test/config/erob_slave_config.yaml</param>
+      </ec_module>
+    </joint>
+  </ros2_control>
+
+</robot>
