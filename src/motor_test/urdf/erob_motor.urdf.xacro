@@ -15,7 +15,7 @@
     <hardware>
       <plugin>ethercat_driver/EthercatDriver</plugin>
       <param name="master_id">0</param>
-      <param name="control_frequency">100</param>
+      <param name="control_frequency">1000</param>
     </hardware>
 
     <joint name="erob_joint">
