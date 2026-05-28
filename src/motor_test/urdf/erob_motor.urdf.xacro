@@ -43,10 +43,10 @@
 
         <!-- Mode of operation:
              6  = Homing
-             8  = Cyclic Synchronous Position (CSP)  <-- default here
+             8  = Cyclic Synchronous Position (CSP)
              9  = Cyclic Synchronous Velocity (CSV)
              10 = Cyclic Synchronous Torque (CST) -->
-        <param name="mode_of_operation">8</param>
+        <param name="mode_of_operation">8</param> 
 
         <!-- UPDATE THIS PATH to the absolute path on your Jetson -->
         <param name="slave_config">/home/spearua/alec/software_2026/install/motor_test/share/motor_test/config/erob_slave_config.yaml</param>
