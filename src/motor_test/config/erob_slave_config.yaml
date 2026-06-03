@@ -21,9 +21,9 @@ auto_fault_reset: true
 #   ros2 launch motor_test erob_motor_launch.py
 sdo:
   - {index: 0x1C32, sub_index: 1, type: uint16, value: 2}       # SM2 sync type = DC Sync0
-  - {index: 0x1C32, sub_index: 10, type: uint32, value: 1000000}  # SM2 cycle time = 1ms (recommended by eRob manual)
+  - {index: 0x1C32, sub_index: 10, type: uint32, value: 10000000}  # SM2 cycle time = 10ms
   - {index: 0x1C33, sub_index: 1, type: uint16, value: 2}       # SM3 sync type = DC Sync0
-  - {index: 0x1C33, sub_index: 10, type: uint32, value: 1000000}  # SM3 cycle time = 1ms
+  - {index: 0x1C33, sub_index: 10, type: uint32, value: 10000000}  # SM3 cycle time = 10ms
   - {index: 0x6080, sub_index: 0, type: uint32, value: 3000}    # max motor speed 3000 RPM
   - {index: 0x606D, sub_index: 0, type: uint16, value: 500}     # velocity error window 500 RPM
   - {index: 0x606E, sub_index: 0, type: uint16, value: 100}     # velocity error timeout 100ms
