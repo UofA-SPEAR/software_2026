@@ -1,0 +1,27 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: plex_arm_2
+    relative_path: urdf/plex_arm_2.urdf.xacro
+  srdf:
+    relative_path: config/plex_arm_2.srdf
+  package_settings:
+    author_name: spearua
+    author_email: spear@ualberta.ca
+    generated_timestamp: 1782592822
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity
