@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="plex_arm_urdf_3" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===================== PROPERTIES ===================== -->
+  <!-- Colors -->
+  <xacro:property name="color_grey"  value="0.75294 0.75294 0.75294 1" />
+  <xacro:property name="color_blue"  value="0.86667 0.9098 1 1" />
+
+  <!-- ===================== MACROS ===================== -->
+  <xacro:macro name="default_inertial" params="mass ixx ixy ixz iyy iyz izz ox oy oz">
+    <inertial>
+      <origin xyz="${ox} ${oy} ${oz}" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+               iyy="${iyy}" iyz="${iyz}" izz="${izz}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="mesh_link" params="name color mesh_file ox oy oz
+               mass ixx ixy ixz iyy iyz izz">
+    <link name="${name}">
+      <xacro:default_inertial mass="${mass}"
+        ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+        iyy="${iyy}" iyz="${iyz}" izz="${izz}"
+        ox="${ox}" oy="${oy}" oz="${oz}" />
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://plex_arm_urdf_3/meshes/${mesh_file}.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="${color}" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://plex_arm_urdf_3/meshes/${mesh_file}.STL" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!-- ===================== LINKS ===================== -->
+  <xacro:mesh_link name="base_link" color="${color_grey}" mesh_file="base_link"
+    ox="-2.2467E-05" oy="-1.5826E-05" oz="0.037461"
+    mass="0.39916"
+    ixx="0.00032485" ixy="5.025E-08"  ixz="-2.2819E-07"
+    iyy="0.00032522" iyz="-1.8676E-07" izz="0.00048667" />
+
+  <xacro:mesh_link name="link_2" color="${color_blue}" mesh_file="link_2"
+    ox="0.0021138" oy="-0.016329" oz="0.052462"
+    mass="1.0133"
+    ixx="0.0014335" ixy="-1.4203E-05" ixz="7.5921E-06"
+    iyy="0.001499"  iyz="0.00012324"  izz="0.0014189" />
+
+  <xacro:mesh_link name="link_3" color="${color_grey}" mesh_file="link_3"
+    ox="0.26754" oy="0.053738" oz="-0.031859"
+    mass="1.3505"
+    ixx="0.0013405" ixy="4.1403E-05" ixz="0.0002258"
+    iyy="0.0032102" iyz="-5.27E-06"  izz="0.0031982" />
+
+  <xacro:mesh_link name="link_4" color="${color_grey}" mesh_file="link_4"
+    ox="0.082946" oy="-0.041589" oz="0.059096"
+    mass="0.53981"
+    ixx="0.0004222"  ixy="7.614E-06"  ixz="-0.00010509"
+    iyy="0.00066838" iyz="6.346E-06"  izz="0.00062584" />
+
+  <xacro:mesh_link name="link_5" color="${color_grey}" mesh_file="link_5"
+    ox="0.015109" oy="-0.00066097" oz="0.23769"
+    mass="0.56411"
+    ixx="0.0011559" ixy="1.6719E-06"  ixz="-5.4768E-05"
+    iyy="0.0011686" iyz="7.9723E-07"  izz="0.00028936" />
+
+  <xacro:mesh_link name="link_6" color="${color_grey}" mesh_file="link_6"
+    ox="0.037346" oy="-0.016629" oz="0.039697"
+    mass="0.20707"
+    ixx="8.7908E-05"  ixy="1.4913E-05"  ixz="2.6473E-05"
+    iyy="0.00015558"  iyz="-6.0339E-06" izz="0.00012787" />
+
+  <!-- ===================== JOINTS ===================== -->
+  <joint name="joint_1" type="continuous">
+    <origin xyz="0 0 0.0641" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child  link="link_2" />
+    <axis   xyz="0 0 1" />
+  </joint>
+
+  <joint name="joint_2" type="continuous">
+    <origin xyz="-0.0016216 -0.058978 0.063" rpy="0 0 0" />
+    <parent link="link_2" />
+    <child  link="link_3" />
+    <axis   xyz="-0.027485 -0.99962 0" />
+  </joint>
+
+  <joint name="joint_3" type="continuous">
+    <origin xyz="0.42375 0.10171 -0.050398" rpy="0 0 0" />
+    <parent link="link_3" />
+    <child  link="link_4" />
+    <axis   xyz="-0.027485 -0.99962 0" />
+  </joint>
+
+  <joint name="joint_4" type="continuous">
+    <origin xyz="0.096215 -0.055479 0.11335" rpy="0 0 0" />
+    <parent link="link_4" />
+    <child  link="link_5" />
+    <axis   xyz="0.063628 -0.0017495 0.99797" />
+  </joint>
+
+  <joint name="joint_5" type="continuous">
+    <origin xyz="0.019526 -0.00053686 0.30625" rpy="0 0 0" />
+    <parent link="link_5" />
+    <child  link="link_6" />
+    <axis   xyz="-0.16576 -0.98613 0.00884" />
+  </joint>
+
+</robot>

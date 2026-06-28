@@ -40,6 +40,9 @@ trajectory_controller:
     state_interfaces:
       - position
       - velocity
+    start_with_holding: true
+    set_last_command_interface_value_as_state_on_activation: true
+    action_monitor_rate: 1000.0
 
 
 velocity_controller:
