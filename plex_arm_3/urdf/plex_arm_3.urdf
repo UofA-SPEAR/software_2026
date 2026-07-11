@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="plex_arm_3">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-2.2023E-05 -1.6437E-05 0.037561"
+        rpy="0 0 0" />
+      <mass
+        value="0.39916" />
+      <inertia
+        ixx="0.00032485"
+        ixy="4.0004E-08"
+        ixz="-2.2297E-07"
+        iyy="0.00032522"
+        iyz="-1.9296E-07"
+        izz="0.00048667" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Link_2">
+    <inertial>
+      <origin
+        xyz="-7.4332E-06 -0.016265 0.055554"
+        rpy="0 0 0" />
+      <mass
+        value="1.0133" />
+      <inertia
+        ixx="0.0014695"
+        ixy="-1.9498E-07"
+        ixz="1.6841E-07"
+        iyy="0.0014982"
+        iyz="0.00010509"
+        izz="0.0013838" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.86667 0.9098 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_1"
+    type="continuous">
+    <origin
+      xyz="0 0 0.064"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_2" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Link_3">
+    <inertial>
+      <origin
+        xyz="0.00040256 0.26786 -0.060583"
+        rpy="0 0 0" />
+      <mass
+        value="1.3505" />
+      <inertia
+        ixx="0.0032252"
+        ixy="8.7444E-06"
+        ixz="8.1897E-08"
+        iyy="0.0013126"
+        iyz="1.031E-05"
+        izz="0.003211" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_2"
+    type="continuous">
+    <origin
+      xyz="0 -0.0585 0.0632"
+      rpy="1.5708 0 0.027488" />
+    <parent
+      link="Link_2" />
+    <child
+      link="Link_3" />
+    <axis
+      xyz="-0.027485 0 0.99962" />
+  </joint>
+  <link
+    name="Link_4">
+    <inertial>
+      <origin
+        xyz="0.078983 -0.064429 -0.039666"
+        rpy="0 0 0" />
+      <mass
+        value="0.53981" />
+      <inertia
+        ixx="0.00043662"
+        ixy="0.00011741"
+        ixz="7.0309E-06"
+        iyy="0.00061134"
+        iyz="-6.7319E-06"
+        izz="0.00066845" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_3"
+    type="continuous">
+    <origin
+      xyz="0.0010465 0.4238 -0.11101"
+      rpy="3.1416 0 0" />
+    <parent
+      link="Link_3" />
+    <child
+      link="Link_4" />
+    <axis
+      xyz="-0.027485 0 -0.99962" />
+  </joint>
+  <link
+    name="Link_5">
+    <inertial>
+      <origin
+        xyz="-0.00032619 0.0002484 0.25202"
+        rpy="0 0 0" />
+      <mass
+        value="0.56411" />
+      <inertia
+        ixx="0.0011591"
+        ixy="-2.4169E-07"
+        ixz="3.1175E-07"
+        iyy="0.0011689"
+        iyz="4.9596E-07"
+        izz="0.00028591" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_4"
+    type="continuous">
+    <origin
+      xyz="0.088719 -0.1056 -0.053459"
+      rpy="1.5708 0.027488 0" />
+    <parent
+      link="Link_4" />
+    <child
+      link="Link_5" />
+    <axis
+      xyz="-0.0012835 0 1" />
+  </joint>
+  <link
+    name="Link_6">
+    <inertial>
+      <origin
+        xyz="-0.022935 -0.051096 -0.020613"
+        rpy="0 0 0" />
+      <mass
+        value="0.20707" />
+      <inertia
+        ixx="7.2295E-05"
+        ixy="5.9884E-06"
+        ixz="3.1701E-06"
+        iyy="0.00014045"
+        iyz="-2.1946E-07"
+        izz="0.00015861" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://plex_arm_3/meshes/Link_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_5"
+    type="continuous">
+    <origin
+      xyz="-0.0012321 0.031189 0.32072"
+      rpy="-1.5708 0 0.027488" />
+    <parent
+      link="Link_5" />
+    <child
+      link="Link_6" />
+    <axis
+      xyz="0.0011884 3.3751E-05 1" />
+  </joint>
+</robot>

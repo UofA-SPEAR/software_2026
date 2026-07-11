@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  plex_arm_3.xacro
+  Refactored from SolidWorks-exported URDF into xacro.
+  Original export: sw_urdf_exporter, Commit 1.6.0-4-g7f85cfe, Build 1.6.7995.38578
+
+  Process with:
+    ros2 run xacro xacro plex_arm_3.xacro > plex_arm_3.urdf   (to inspect output)
+  or reference directly in a launch file via:
+    Command(['xacro ', PathJoinSubstitution([FindPackageShare('plex_arm_3'), 'urdf', 'plex_arm_3.xacro'])])
+-->
+<robot name="plex_arm_3" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ============================ Properties ============================ -->
+  <xacro:property name="mesh_path" value="package://plex_arm_3/meshes" />
+
+  <!-- ============================= Materials ============================= -->
+  <material name="silver">
+    <color rgba="0.75294 0.75294 0.75294 1" />
+  </material>
+  <material name="light_blue">
+    <color rgba="0.86667 0.9098 1 1" />
+  </material>
+
+  <!-- ============================== Macros ================================ -->
+  <!--
+    arm_link: builds a link whose visual and collision geometry both point at
+    ${mesh_path}/${name}.STL. All inertial properties are exposed as params so
+    each link instantiation reads like a data table instead of buried XML.
+  -->
+  <xacro:macro name="arm_link"
+    params="name mass com_xyz ixx ixy ixz iyy iyz izz material_name">
+    <link name="${name}">
+      <inertial>
+        <origin xyz="${com_xyz}" rpy="0 0 0" />
+        <mass value="${mass}" />
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+                 iyy="${iyy}" iyz="${iyz}" izz="${izz}" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="${mesh_path}/${name}.STL" />
+        </geometry>
+        <material name="${material_name}" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="${mesh_path}/${name}.STL" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!--
+    continuous_joint: every joint in this arm is type="continuous", so this
+    macro just parameterizes name/parent/child/origin/axis.
+  -->
+  <xacro:macro name="continuous_joint"
+    params="name parent child origin_xyz origin_rpy axis_xyz">
+    <joint name="${name}" type="continuous">
+      <origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
+      <parent link="${parent}" />
+      <child link="${child}" />
+      <axis xyz="${axis_xyz}" />
+    </joint>
+  </xacro:macro>
+
+  <!-- =============================== Links ================================ -->
+  <xacro:arm_link name="base_link" mass="0.39916"
+    com_xyz="-2.2023E-05 -1.6437E-05 0.037561"
+    ixx="0.00032485" ixy="4.0004E-08"  ixz="-2.2297E-07"
+    iyy="0.00032522" iyz="-1.9296E-07" izz="0.00048667"
+    material_name="silver" />
+
+  <xacro:arm_link name="Link_2" mass="1.0133"
+    com_xyz="-7.4332E-06 -0.016265 0.055554"
+    ixx="0.0014695" ixy="-1.9498E-07" ixz="1.6841E-07"
+    iyy="0.0014982" iyz="0.00010509"  izz="0.0013838"
+    material_name="light_blue" />
+
+  <xacro:arm_link name="Link_3" mass="1.3505"
+    com_xyz="0.00040256 0.26786 -0.060583"
+    ixx="0.0032252" ixy="8.7444E-06" ixz="8.1897E-08"
+    iyy="0.0013126" iyz="1.031E-05"  izz="0.003211"
+    material_name="silver" />
+
+  <xacro:arm_link name="Link_4" mass="0.53981"
+    com_xyz="0.078983 -0.064429 -0.039666"
+    ixx="0.00043662" ixy="0.00011741"  ixz="7.0309E-06"
+    iyy="0.00061134" iyz="-6.7319E-06" izz="0.00066845"
+    material_name="silver" />
+
+  <xacro:arm_link name="Link_5" mass="0.56411"
+    com_xyz="-0.00032619 0.0002484 0.25202"
+    ixx="0.0011591" ixy="-2.4169E-07" ixz="3.1175E-07"
+    iyy="0.0011689" iyz="4.9596E-07"  izz="0.00028591"
+    material_name="silver" />
+
+  <xacro:arm_link name="Link_6" mass="0.20707"
+    com_xyz="-0.022935 -0.051096 -0.020613"
+    ixx="7.2295E-05" ixy="5.9884E-06" ixz="3.1701E-06"
+    iyy="0.00014045" iyz="-2.1946E-07" izz="0.00015861"
+    material_name="silver" />
+
+  <!-- =============================== Joints =============================== -->
+  <xacro:continuous_joint name="Joint_1"
+    parent="base_link" child="Link_2"
+    origin_xyz="0 0 0.064" origin_rpy="0 0 0"
+    axis_xyz="0 0 1" />
+
+  <xacro:continuous_joint name="Joint_2"
+    parent="Link_2" child="Link_3"
+    origin_xyz="0 -0.0585 0.0632" origin_rpy="1.5708 0 0.027488"
+    axis_xyz="-0.027485 0 0.99962" />
+
+  <xacro:continuous_joint name="Joint_3"
+    parent="Link_3" child="Link_4"
+    origin_xyz="0.0010465 0.4238 -0.11101" origin_rpy="3.1416 0 0"
+    axis_xyz="-0.027485 0 -0.99962" />
+
+  <xacro:continuous_joint name="Joint_4"
+    parent="Link_4" child="Link_5"
+    origin_xyz="0.088719 -0.1056 -0.053459" origin_rpy="1.5708 0.027488 0"
+    axis_xyz="-0.0012835 0 1" />
+
+  <xacro:continuous_joint name="Joint_5"
+    parent="Link_5" child="Link_6"
+    origin_xyz="-0.0012321 0.031189 0.32072" origin_rpy="-1.5708 0 0.027488"
+    axis_xyz="0.0011884 3.3751E-05 1" />
+
+</robot>

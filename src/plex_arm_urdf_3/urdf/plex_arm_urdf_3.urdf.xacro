@@ -129,17 +129,17 @@
 
   <!-- joint_1 : base_link → link_2  (shoulder yaw, ~Z axis) -->
   <joint name="joint_1" type="revolute">
-    <origin xyz="0.0013509 -0.0013066 0.0641" rpy="0 -0.0012835 -0.027488" />
+    <origin xyz="0.0013509 -0.0013066 0.0641" rpy="0 -0.0012835 -0.027488"/>
     <parent link="base_link" />
     <child  link="link_2" />
-    <axis   xyz="0.0012835 0 1" />
+    <axis   xyz="0.0012835 0 1" /> 
     <limit lower="-3.14" upper="3.14"
            effort="${default_effort}" velocity="${default_velocity}" />
   </joint>
 
   <!-- joint_2 : link_2 → link_3  (upper-arm pitch, −Y axis) -->
   <joint name="joint_2" type="revolute">
-    <origin xyz="-0.0011924 0 0.4323" rpy="0 0.0012835 0" />
+    <origin xyz="-0.0011924 0 0.4323" rpy="0 0 0" />
     <parent link="link_2" />
     <child  link="link_3" />
     <axis   xyz="0 -1 0" />
