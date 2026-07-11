@@ -20,7 +20,7 @@ servo_node:
       # override_velocity_scaling_factor = 0.0 # valid range [0.0:1.0]
 
       ## Properties of outgoing commands
-      publish_period: 0.001  # 1/Nominal publish rate [seconds]
+      publish_period: 0.01  # 1/Nominal publish rate [seconds]
       low_latency_mode: false  # Set this to true to publish as soon as an incoming Twist command is received (publish_period is ignored)
 
       # What type of topic does your robot driver expect?
@@ -66,7 +66,8 @@ servo_node:
       joint_command_in_topic: ~/delta_joint_cmds # Topic for incoming joint angle commands
       joint_topic: /joint_states
       status_topic: ~/status # Publish status to this topic
-      command_out_topic: /trajectory_controller/joint_trajectory # Publish outgoing commands here
+      # command_out_topic: /trajectory_controller/joint_trajectory # Publish outgoing commands here
+      command_out_topic: /plex_arm_controller/joint_trajectory
 
       ## Collision checking for the entire robot body
       check_collisions: false # Check collisions?

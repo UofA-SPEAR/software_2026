@@ -19,7 +19,7 @@ KEY_BINDINGS = {
     'y': (5, 1.0),  'h': (5, -1.0),   # joint_6
 }
 
-JOINT_NAMES = ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6']
+JOINT_NAMES = ['Joint_1', 'Joint_2', 'Joint_3', 'Joint_4', 'Joint_5', 'Joint_6']
 
 INSTRUCTIONS = """
 Keyboard joint jog teleop

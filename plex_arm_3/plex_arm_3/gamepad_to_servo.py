@@ -36,12 +36,12 @@ class gamepad_to_servo(Node):
         joint_cmd.header.frame_id = 'base_link'
 
         # Map each stick axis to a joint
-        joint_cmd.joint_names = ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5']
+        joint_cmd.joint_names = ['Joint_1', 'Joint_2', 'Joint_3', 'Joint_4', 'Joint_5']
         joint_cmd.velocities = [
             msg.axes[0],   # left stick left/right → joint_1
             msg.axes[1],   # left stick up/down  → joint_2
             msg.axes[4],   # right stick up/down → joint_3
-            msg.axes[3],   # right stick left/right → joint_4
+            msg.axes[3] * -1,   # right stick left/right → joint_4
             (msg.axes[2] - msg.axes[5])*0.5,   # triggers → joint_5
             # (msg.buttons[4] - msg.buttons[5])*0.5,   # bumpers → joint_6
         ]
