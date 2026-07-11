@@ -21,8 +21,8 @@
   <xacro:property name="color_blue"         value="0.86667 0.9098  1       1" />
 
   <!-- Placeholder limits — fill these in per-joint once confirmed -->
-  <xacro:property name="default_effort"     value="0" />
-  <xacro:property name="default_velocity"   value="0" />
+  <xacro:property name="default_effort"     value="100" />
+  <xacro:property name="default_velocity"   value="100" />
 
   <!-- ============================================================
        Macros

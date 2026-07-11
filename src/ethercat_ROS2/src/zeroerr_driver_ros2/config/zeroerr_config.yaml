@@ -18,7 +18,7 @@ sdo:
   # Mode of Operation = CSP (8). Reference code (IGH/SOEM) writes CSV (9) via SDO;
   # if EEPROM stored CSV the drive ignores position PDOs and treats 0x60FF as primary command.
   # 0x6060 cannot be PDO-mapped on this drive (IGH reference comments it out too) — SDO only.
-  - {index: 0x6060, sub_index: 0, type: uint8, value: 8}
+  - {index: 0x6060, sub_index: 0, type: uint8, value: 9}
   - {index: 0x6080, sub_index: 0, type: uint32, value: 3000}    # max motor speed 3000 RPM
   - {index: 0x606D, sub_index: 0, type: uint16, value: 5000}     # velocity error window 500 RPM
   - {index: 0x606E, sub_index: 0, type: uint16, value: 1000}     # velocity error timeout 100ms
@@ -36,13 +36,19 @@ rpdo:  # RxPDO = receive PDO Mapping
 tpdo:  # TxPDO = transmit PDO Mapping 
   - index: 0x1A00
     channels:
-      - {index: 0x6064, sub_index: 0, type: int32, state_interface: position, factor: 0.000011991}  # counts → rad (2π / 524000)
-      - {index: 0x606c, sub_index: 0, type: int32, state_interface: velocity, factor: 0.000011991}  # counts/s → rad/s
-      - {index: 0x6077, sub_index: 0, type: int16, state_interface: effort}
-      - {index: 0x60fd, sub_index: 0, type: int32}  # Digital Input Functionalities
-      - {index: 0x6041, sub_index: 0, type: uint16}  # Status word
-      - {index: 0x6061, sub_index: 0, type: uint16, default: 8}
-      - {index: 0x603F, sub_index: 0, type: uint16}
+      - {index: 0x6064, sub_index: 0, type: int32, state_interface: position, factor: 0.000011991}  # offset 0
+      - {index: 0x606c, sub_index: 0, type: int32, state_interface: velocity, factor: 0.000011991}  # offset 4
+      - {index: 0x60fd, sub_index: 0, type: int32, state_interface: digital_inputs}
+      - {index: 0x6079, sub_index: 0, type: int32, state_interface: bus_voltage}                    # offset 12
+      - {index: 0x606B, sub_index: 0, type: int32, state_interface: velocity_demand}                # offset 16
+      - {index: 0x60FC, sub_index: 0, type: int32, state_interface: position_demand}                # offset 20
+      - {index: 0x6077, sub_index: 0, type: int16, state_interface: effort}                         # offset 24
+      - {index: 0x6041, sub_index: 0, type: uint16, state_interface: status_word}
+      - {index: 0x6061, sub_index: 0, type: uint16, default: 9, state_interface: mode_of_operation}
+      - {index: 0x603F, sub_index: 0, type: uint16, state_interface: error_code}
+      - {index: 0x6078, sub_index: 0, type: int16, state_interface: current}                        # offset 32
+      - {index: 0x6074, sub_index: 0, type: int16, state_interface: torque_demand}                  # offset 34
+      - {index: 0x60B9, sub_index: 0, type: int16, state_interface: touch_probe_status}             # offset 36
 
       
 sm:  # Sync Manager
